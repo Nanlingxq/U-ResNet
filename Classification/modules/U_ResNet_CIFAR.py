@@ -59,6 +59,8 @@ class EUCB(nn.Module):
         x = channel_shuffle(x, self.in_channels)
         x = self.pwc(x)
         return x
+
+# Improved efficient up-convolution block (EUCB)
 class EUCB2(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, activation='relu', scale_factor=2):
         super(EUCB2, self).__init__()

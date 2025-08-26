@@ -111,7 +111,7 @@ if __name__ == "__main__":
         correct_top1 = 0
         correct_top5 = 0
         total = 0
-        with torch.no_grad(): #禁用梯度计算，加快运行速度，减少内存开销
+        with torch.no_grad():
             for images, labels in test_loader:
                 images, labels = images.to(device), labels.to(device)
                 outputs = model(images)

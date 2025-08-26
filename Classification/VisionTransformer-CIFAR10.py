@@ -14,7 +14,7 @@ Epochs = 100
 batch_size = 64
 num_workers = 0
 valid_size = 0.2
-initial_learning_rate = 0.001  # ViT 使用较小的学习率
+initial_learning_rate = 0.001
 
 train_result = []
 
@@ -61,11 +61,10 @@ def ModelEval(model, test_loader, Epoch, train_on_gpu=train_on_gpu):
     return accuracy
 
 
-# 修改数据预处理部分
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225])  # ViT 的归一化参数
+                         std=[0.229, 0.224, 0.225])
 ])
 
 train_data = datasets.CIFAR10('./CIFAR10', train=True, download=True, transform=transform)
@@ -96,7 +95,7 @@ model = vit_b_16(image_size=32, num_classes=10).to(device)
 
 criterion = nn.CrossEntropyLoss()
 
-# 修改优化器部分
+
 optimizer = torch.optim.AdamW(model.parameters(), lr=initial_learning_rate)
 
 valid_loss_min = np.Inf

@@ -60,6 +60,44 @@ class EUCB(nn.Module):
         x = self.pwc(x)
         return x
 
+# Improved efficient up-convolution block (EUCB)
+class EUCB2(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, activation='relu', scale_factor=2):
+        super(EUCB2, self).__init__()
+
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.up_dwc1 = nn.Sequential(
+            nn.Upsample(scale_factor=scale_factor, mode="bilinear"),
+            nn.Conv2d(self.in_channels, self.in_channels, kernel_size=kernel_size, stride=stride,
+                      padding=kernel_size // 2, groups=self.in_channels // 4, bias=False),
+            nn.BatchNorm2d(self.in_channels),
+            act_layer(activation, inplace=True)
+        )
+        self.up_dwc2 = nn.Sequential(
+            nn.Conv2d(self.in_channels, self.in_channels, kernel_size=kernel_size, stride=stride,
+                      padding=kernel_size // 2, groups=self.in_channels // 4, bias=False),
+            nn.BatchNorm2d(self.in_channels),
+            act_layer(activation, inplace=True)
+        )
+        self.up_dwc3 = nn.Sequential(
+            nn.Conv2d(self.in_channels, self.in_channels, kernel_size=kernel_size, stride=stride,
+                      padding=kernel_size // 2, groups=self.in_channels // 4, bias=False),
+            nn.BatchNorm2d(self.in_channels),
+            act_layer(activation, inplace=True)
+        )
+        self.pwc = nn.Sequential(
+            nn.Conv2d(self.in_channels, self.out_channels, kernel_size=1, stride=1, padding=0, bias=True)
+        )
+
+    def forward(self, x):
+        x = self.up_dwc1(x)
+        x = channel_shuffle(x, self.in_channels)
+        x = self.up_dwc2(x)
+        x = channel_shuffle(x, self.in_channels)
+        x = self.up_dwc3(x)
+        x = self.pwc(x)
+        return x
 
 class DoubleConv(nn.Sequential):
     def __init__(self, in_channels, out_channels, mid_channels=None):
@@ -159,28 +197,16 @@ class UNet(nn.Module):
         self.out_conv = OutConv(base_c * 8, num_classes)
 
     def forward(self, x: torch.Tensor):
-        # 假设输入的特征图尺寸为[N, C, H, W]，[4, 3, 480, 480],依次代表BatchSize, 通道数量，高，宽；   则输出为[4, 64, 480,480]
-        x1 = self.in_conv(x)
-        # 输入的特征图尺寸为[4, 64, 480, 480];  输出为[4, 128, 240,240]
-        x2 = self.down1(x1)
-        # 输入的特征图尺寸为[4, 128, 240,240];  输出为[4, 256, 120,120]
-        x3 = self.down2(x2)
-        # 输入的特征图尺寸为[4, 256, 120,120];  输出为[4, 512, 60,60]
-        x4 = self.down3(x3)
-        # 输入的特征图尺寸为[4, 512, 60,60];  输出为[4, 1024, 30,30]
-        x5 = self.down4(x4)
 
+        x1 = self.in_conv(x)
+        x2 = self.down1(x1)
+        x3 = self.down2(x2)
+        x4 = self.down3(x3)
+        x5 = self.down4(x4)
         x6 = self.down5(x5)
         x = self.up0(x6, x5)
-        # 输入的特征图尺寸为[4, 1024, 30,30];  输出为[4, 512, 60, 60]
         x = self.up1(x, x4)
-        # 输入的特征图尺寸为[4, 512, 60,60];  输出为[4, 256, 120, 120]
-        # x = self.up2(x, x3)
-        # 输入的特征图尺寸为[4, 256, 120,120];  输出为[4, 128, 240, 240]
-        # x = self.up3(x, x2)
-        # 输入的特征图尺寸为[4, 128, 240,240];  输出为[4, 64, 480, 480]
-        # x = self.up4(x, x1)
-        # 输入的特征图尺寸为[4, 64, 480,480];  输出为[4, 2, 480, 480]
+
         logits = self.out_conv(x)
 
         return logits
@@ -292,10 +318,10 @@ class CombinePooling(nn.Module):
         # print(f"x1 = {x1.size()}, x2 = {x2.size()}, out = {out.size()}")
         return out
 
-class NlNet(nn.Module):
+class U_ResNet(nn.Module):
     def __init__(self, num_classes, in_channels, ResidulBlock=BasicBlock):
-        super(NlNet, self).__init__()
-        self.name = "NlNet"
+        super(U_ResNet, self).__init__()
+        self.name = "U_ResNet"
 
         self.inchannel = 64
         self.conv1 = nn.Sequential(
@@ -308,11 +334,10 @@ class NlNet(nn.Module):
         self.ResLayer2 = self.make_layer(ResidulBlock, 128, 2, stride=2)
         self.ResLayer3 = self.make_layer(ResidulBlock, 256, 2, stride=2)
         self.ResLayer4 = self.make_layer(ResidulBlock, 512, 2, stride=2)
-        self.Upsample = EUCB(in_channels=512, out_channels=256, scale_factor=2)
+        self.Upsample = EUCB2(in_channels=512, out_channels=256, scale_factor=2)
         self.CBPooling = CombinePooling(kernel_size=7, stride=7)
         self.fc = nn.Linear(5696, num_classes)
 
-        # self.U_Net = UNet(in_channels=in_channels, num_classes=num_classes,base_c=64)
     def make_layer(self, block, channels, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
@@ -330,15 +355,11 @@ class NlNet(nn.Module):
         out = self.ResLayer4(out)
         out = self.Upsample(out)
 
-        # print(f"out:{out.size()}  logits:{logits.size()}")
-
         out = torch.cat([out, logits], dim=1)
 
         out = F.avg_pool2d(out, 7)
-        # out = self.CBPooling(out)
         out = out.view(out.size(0), -1)
 
-        # print(out.size())
         out = self.fc(out)
 
         return out

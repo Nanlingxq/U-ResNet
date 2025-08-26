@@ -26,7 +26,7 @@ def TestRobustness(model, test_dir=r"miniImageNet_d/test"):
     correct_top1 = 0
     correct_top5 = 0
     attack = FGSM(model, eps=0.03)
-    with torch.no_grad():  # 禁用梯度计算，加快运行速度，减少内存开销
+    with torch.no_grad():
         for images, labels in test_loader:
             # print(images)
             images = add_gaussian_noise(images, 0.01)
@@ -48,7 +48,7 @@ def add_gaussian_noise(image, noise_level=0.1):
     noise = torch.randn_like(image) * noise_level
     noise = torch.clamp(noise, -1, 1)
     noisy_image = image + noise
-    return noisy_image  # 假设数据范围在
+    return noisy_image
 
 model = temp.NlNet(num_classes=100, in_channels=3)
 checkpoint = torch.load(r'./MiniImageNetResult/model_test.pt', map_location='cpu', weights_only=True)

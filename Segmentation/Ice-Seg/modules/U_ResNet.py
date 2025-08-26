@@ -91,14 +91,10 @@ class DoubleConv(nn.Sequential):
         if mid_channels is None:
             mid_channels = out_channels
         super(DoubleConv, self).__init__(
-            # 定义padding为1，保持卷积后特征图的宽度和高度不变，具体计算N= (W-F+2P)/S+1
             nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1, bias=False),
-            # 加入BN层，提升训练速度，并提高模型效果
             nn.BatchNorm2d(mid_channels),
             nn.ReLU(inplace=True),
-            # 第二个卷积层，同第一个
             nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1, bias=False),
-            # BN层
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
         )
@@ -106,7 +102,6 @@ class DoubleConv(nn.Sequential):
 class Down(nn.Sequential):
     def __init__(self, in_channels, out_channels):
         super(Down, self).__init__(
-            # 最大池化，步长为2，池化核大小为2，计算公式同卷积，则 N = (W-F+2P)/S+1,  N= (W-2+0)/4 + 1
             nn.MaxPool2d(2, stride=2),
             DoubleConv(in_channels, out_channels)
         )
@@ -115,18 +110,14 @@ class Up(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(Up, self).__init__()
 
-        # 调用转置卷积的方法进行上采样，使特征图的高和宽翻倍，out  =(W−1)×S−2×P+F，通道数减半
         self.up = nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
-        # 调用双层卷积类，通道数是否减半要看out_channels接收的值
         self.conv = DoubleConv(in_channels, out_channels)
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
         x1 = self.up(x1)
 
-        # X的shape为[N, C, H, W]，下面三行代码主要是为了保证x1和x2在维度为2和3的地方保持一致，方便cat操作不出错。
         diff_y = x2.size()[2] - x1.size()[2]
         diff_x = x2.size()[3] - x1.size()[3]
-        # 增加padding操作，padding_left, padding_right, padding_top, padding_bottom
         x1 = F.pad(x1, [diff_x // 2, diff_x - diff_x // 2,
                         diff_y // 2, diff_y - diff_y // 2])
 
