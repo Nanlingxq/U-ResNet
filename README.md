@@ -24,4 +24,4 @@ This repository contains the official implementation of U-ResNet, a novel parall
 <li>Selected Upsampling (SU): Enhances low-resolution image features.</li>
 
 <li>EUCB*: Improved upsampling block with channel shuffle for faster convergence.</li>
-![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](/Assets/images/Arc.png)
+
