@@ -25,3 +25,18 @@ This repository contains the official implementation of U-ResNet, a novel parall
 
 <li>EUCB*: Improved upsampling block with channel shuffle for faster convergence.</li>
 
+## 📦 Installation
+### Requirements
+<li>Python 3.8+</li>
+
+<li>PyTorch 2.5.1</li>
+
+<li>CUDA 12.1 + cuDNN 9</li>
+
+### Other dependencies:
+<li>torchvision, numpy, opencv-python, tqdm, scikit-image</li>
+
+### To install the package from python, please run the code:
+```
+  pip install -r requirements.txt
+```
