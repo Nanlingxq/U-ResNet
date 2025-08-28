@@ -40,3 +40,17 @@ This repository contains the official implementation of U-ResNet, a novel parall
 ```
   pip install -r requirements.txt
 ```
+
+### Datasets
+[CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz)</br>
+[MiniImageNet](https://www.kaggle.com/datasets/arjunashok33/miniimagenet)</br>
+[Cityscapes](https://www.cityscapes-dataset.com)</br>
+
+## 🔎 Train and Evaluate
+If you have prepared the datasets,  run such code to train the model:
+```
+  python Segmentation/Cityscapes/TrainCode.py
+```
+
+## 🎼 Citation
+If you think this project is helpful, please leave a ⭐️ and cite our paper.
