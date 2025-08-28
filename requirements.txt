@@ -1,0 +1,9 @@
+openpyxl
+pandas
+matplotlib
+einops
+scikit-learn
+tqdm
+vit-pytorch
+timm
+fvcore
