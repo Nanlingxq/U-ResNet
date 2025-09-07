@@ -1,5 +1,5 @@
 # U-ResNet: A Parallel Fusion Network for Image Classification and Segmentation
-
+## Access date: June 12th, 2025
 This repository contains the official implementation of U-ResNet, a novel parallel fusion architecture combining ResNet and U-Net for joint image classification and segmentation, as presented in our paper:</br>
 ## 🧠 Overview
 ### U-ResNet integrates the residual learning of ResNet and the encoder-decoder structure of U-Net in a parallel manner to achieve:</br>
