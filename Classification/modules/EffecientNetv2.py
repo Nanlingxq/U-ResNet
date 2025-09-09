@@ -375,10 +375,3 @@ def efficientnetv2_l(num_classes: int = 1000):
                            num_classes=num_classes,
                            dropout_rate=0.4)
     return model
-
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = efficientnetv2_m(num_classes=10).to(device)
-    summary(net, (64, 3, 32, 32))

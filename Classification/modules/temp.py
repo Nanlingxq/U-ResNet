@@ -567,9 +567,3 @@ class UResNet2(nn.Module):
         out = self.fc(out)
 
         return out
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = UResNet2(num_classes=100).to(device)
-    summary(net, (1, 3, 224, 224))

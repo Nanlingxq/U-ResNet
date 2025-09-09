@@ -676,18 +676,3 @@ class RMT_Segmentation(nn.Module):
     def forward(self, x):
         features = self.backbone(x)
         return self.seg_head(features)
-
-
-if __name__ == '__main__':
-    from torchstat import stat
-    # from torchsummary import summary
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = RMT_Segmentation(
-        num_classes=1, in_chans=3, out_indices=(0, 1, 2, 3),
-        embed_dims=[48, 96, 192, 384], depths=[4, 7, 21, 7], num_heads=[8, 8, 16, 16],
-        init_values=[2, 2, 2, 2], heads_ranges=[6, 6, 6, 6], mlp_ratios=[4, 4, 3, 3], drop_path_rate=0.1
-    ).to(device)
-
-    summary(net, (2, 3, 640, 640))

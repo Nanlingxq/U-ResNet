@@ -58,9 +58,3 @@ class MobleNetV1(nn.Module):
             nn.ReLU(),
         )
 
-if __name__ == '__main__':
-    from torchstat import stat
-
-    net = MobleNetV1(num_classes=10)
-    stat(net, (3, 32, 32))
-

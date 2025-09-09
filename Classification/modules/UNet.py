@@ -123,10 +123,3 @@ class UNet(nn.Module):
         logits = self.out_conv(x)
 
         return logits
-
-if __name__ == '__main__':
-    from torchstat import stat
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = UNet(num_classes=10, in_channels=3, base_c=64)
-    stat(net, (3, 32, 32))

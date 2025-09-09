@@ -149,11 +149,3 @@ def test():
     y = net(torch.randn(1, 3, 224, 224))
     print(y.size())
     summary(net, (1, 3, 224, 224), depth=5)
-
-
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = ShuffleNet_g4(num_classes=10).to(device)
-    summary(net, (64, 3, 32, 32))

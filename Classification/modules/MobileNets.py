@@ -219,11 +219,3 @@ def main():
           NUM_EPOCHS, DEVICE, NUM_PRINT, lr_scheduler, test_iter)
 
     learning_curve(record_train, record_test)
-
-
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = NlNet(num_classes=10, in_channels=3, scale=4).to(device)
-    summary(net, (64, 3, 32, 32))

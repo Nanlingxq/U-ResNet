@@ -226,12 +226,3 @@ class ResNet18_EUCB(nn.Module):
         out = self.fc(out)
 
         return out
-
-if __name__ == '__main__':
-    from torchstat import stat
-    from torchsummary import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # net = NlNet(num_classes=100, in_channels=3).to(device)
-    net = ResNet34(ResidualBlock=BasicBlock, num_classes=100).to(device)
-    summary(net, (3, 224, 224))

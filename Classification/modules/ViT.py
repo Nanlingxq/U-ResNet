@@ -132,11 +132,3 @@ class ViT(nn.Module):
         # print(x.shape)
 
         return self.mlp_head(x)
-
-if __name__ == "__main__":
-    from torchsummary import summary
-    from torchstat import stat
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = ViT(image_size=224, patch_size=16, num_classes=100, dim=1024, depth=6, heads=16, mlp_dim=2048, dropout=0.1, emb_dropout=0.1).to(device)
-    summary(net, (3, 224, 224))

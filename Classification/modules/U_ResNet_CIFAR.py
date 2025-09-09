@@ -576,10 +576,3 @@ class UResNet4_No_SU(nn.Module):
         out = self.fc(out)
 
         return out
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # net = UResNet3_No_EUCB(num_classes=10, in_channels=3, scale=3).to(device)
-    net = UResNet4_No_SU(num_classes=10, in_channels=3, scale=3).to(device)
-    summary(net, (64, 3, 32, 32))

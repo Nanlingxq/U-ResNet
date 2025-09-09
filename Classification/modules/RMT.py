@@ -673,12 +673,3 @@ def RMT_L6():
     )
     model.default_cfg = _cfg()
     return model
-
-
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = RMT_S().to(device)
-
-    summary(model, (1, 3, 32, 32))

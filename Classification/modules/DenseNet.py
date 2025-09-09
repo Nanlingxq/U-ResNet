@@ -189,9 +189,3 @@ class DenseNetUpSample(nn.Module):
         # print(f"x4.size() = {x.size()}")
         x = self.fc(x)
         return x
-
-if __name__ == '__main__':
-    from torchstat import stat
-
-    net = DenseNet(num_classes=10)
-    stat(net, (3, 32, 32))

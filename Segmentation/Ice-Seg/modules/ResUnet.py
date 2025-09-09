@@ -189,11 +189,3 @@ class LambdaLayer(nn.Module):
 
     def forward(self, x):
         return self.lambd(x)
-
-if __name__ == '__main__':
-    from torchstat import stat
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = ResUNet(n_classes=1, n_channels=3).to(device)
-    summary(net, (2, 3, 640, 640))

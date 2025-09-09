@@ -309,11 +309,3 @@ def create_regnet(model_name="RegNetX_200MF", num_classes=1000):
 
     model = RegNet(cfg=model_cfgs[model_name], num_classes=num_classes)
     return model
-
-if __name__ == '__main__':
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = create_regnet(model_name="regnetx_3.2gf", num_classes=10).to(device)
-
-    summary(model, (1, 3, 32, 32))

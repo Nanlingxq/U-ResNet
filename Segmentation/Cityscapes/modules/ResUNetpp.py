@@ -188,13 +188,3 @@ class build_resunetplusplus(nn.Module):
         output = self.output(output)
 
         return output
-
-
-if __name__ == '__main__':
-    from torchstat import stat
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = build_resunetplusplus().to(device)
-
-    summary(net, (2, 3, 640, 640))

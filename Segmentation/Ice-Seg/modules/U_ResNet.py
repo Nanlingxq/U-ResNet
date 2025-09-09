@@ -438,13 +438,3 @@ class UResNetNoResBlock(nn.Module):
         out = self.out_conv(U_out)
 
         return out
-
-if __name__ == '__main__':
-    from torchstat import stat
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = UResNetNoEUCB().to(device)
-    # net = UNet(seg_classes=1, in_channels=3).to(device)
-    # net = UNet().to(device)
-    summary(net, (2, 3, 640, 640))

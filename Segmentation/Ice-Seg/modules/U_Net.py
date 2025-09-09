@@ -73,12 +73,3 @@ class UNet(nn.Module):
         x = self.outc(x)
         x = self.sigmoid(x)
         return x
-
-if __name__ == '__main__':
-    from torchstat import stat
-    from torchinfo import summary
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    net = UNet(n_classes=1, n_channels=3, n_filters=32).to(device)
-    # net = UNet().to(device)
-    summary(net, (2, 3, 640, 640))
